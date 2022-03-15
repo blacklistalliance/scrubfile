@@ -12,8 +12,10 @@ func TestProcessFile(t *testing.T) {
 	if len(apikey) == 0 {
 		t.Fatal("Missing APIKEY variable")
 	}
+	testnum := os.Getenv("TESTNUMBERS")
+	testnums := strings.Split(testnum, ",")
 	filename := "test.csv"
-	filecontents := "2132133000\n7148180214"
+	filecontents := strings.Join(testnums, "\n")
 	err := os.WriteFile(filename, []byte(filecontents), 0666)
 	if err != nil {
 		t.Fatalf("Unable to write file %v", err)

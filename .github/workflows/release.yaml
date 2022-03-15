@@ -22,6 +22,7 @@ jobs:
         run: go test
         env:
           APIKEY: ${{ secrets.APIKEY }}
+          TESTNUMBERS: ${{ secrets.TESTNUMBERS }}
       - name: Build with xgo
         uses: crazy-max/ghaction-xgo@v1
         with:
