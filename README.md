@@ -61,7 +61,7 @@ Apple blocks downloaded files from executing steps to fix:
 
 ---
 
-##Command line options
+## Command line options
 <pre>
   -apikey string
     	API Key put between single quotes (REQUIRED)
