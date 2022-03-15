@@ -75,12 +75,6 @@ func main() {
 		flag.PrintDefaults()
 		return
 	}
-	zipbytes, err := getZipBytes(*file)
-	if err != nil {
-		fmt.Printf(err.Error())
-		os.Exit(-1)
-	}
-
 	params := map[string]string{
 		"filetype":              "csv",
 		"colnum":                *colnum,
@@ -93,26 +87,38 @@ func main() {
 		"download_wireless":     strconv.FormatBool(*download_wireless),
 		"download_federal_dnc":  strconv.FormatBool(*download_federal_dnc),
 	}
-	zipname := strings.Replace(filepath.Base(*file), filepath.Ext(*file), ".zip", 1)
+	err := processFile(*file, params, *include_feeds)
+	if err != nil {
+		fmt.Print(err)
+		os.Exit(-1)
+	}
+	os.Exit(1)
+}
+
+func processFile(myfile string, params map[string]string, includefeeds bool) error {
+	zipbytes, err := getZipBytes(myfile)
+	if err != nil {
+		return err
+	}
+
+	zipname := strings.Replace(filepath.Base(myfile), filepath.Ext(myfile), ".zip", 1)
 	req, err := newfileUploadRequest(UPLOAD_URL, params, zipname, zipbytes)
 	if err != nil {
-		fmt.Printf("Failed to create upload request \n\tError: %v\n", err)
-		os.Exit(-1)
+		return fmt.Errorf("Failed to create upload request \n\tError: %v\n", err)
 	}
 	retBytes, err := makeRequest(req)
 	if err != nil {
-		fmt.Printf("Request failed\n\tError: %v\n", err)
-		os.Exit(-1)
+		return fmt.Errorf("Request failed\n\tError: %v\n", err)
 	}
 	fmt.Printf("Returned %v bytes\n", len(retBytes))
-	err = unzipSaveResponse(retBytes, filepath.Base(*file))
+	err = unzipSaveResponse(retBytes, filepath.Base(myfile), includefeeds)
 	if err != nil {
-		fmt.Printf("Failed to save response\n\tError: %v\n", err)
-		os.Exit(-1)
+		return fmt.Errorf("Failed to save response\n\tError: %v\n", err)
 	}
+	return nil
 }
 
-func unzipSaveResponse(ret []byte, orgfilename string) error {
+func unzipSaveResponse(ret []byte, orgfilename string, includefeeds bool) error {
 	retReader := bytes.NewReader(ret)
 	zipReader, err := zip.NewReader(retReader, int64(len(ret)))
 	if err != nil {
@@ -130,7 +136,7 @@ func unzipSaveResponse(ret []byte, orgfilename string) error {
 
 	for _, f := range zipReader.File {
 		fmt.Printf("Received file %v\n", f.Name)
-		if f.Name == "included_feeds.txt" && !*include_feeds {
+		if f.Name == "included_feeds.txt" && !includefeeds {
 			continue
 		}
 		justname := strings.Replace(filepath.Base(f.Name), filepath.Ext(f.Name), "", 1)
