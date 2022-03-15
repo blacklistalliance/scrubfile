@@ -19,7 +19,7 @@ jobs:
         with:
           go-version: ${{ matrix.go_version }}
       - name: Test Pre-Publish
-        run: make test
+        run: go test
         env:
           APIKEY: ${{ secrets.APIKEY }}
       - name: Build with xgo
