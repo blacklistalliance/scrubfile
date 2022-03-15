@@ -16,7 +16,7 @@
 `scrubfile` is a utility to scrub files inplace against the Blacklist Litgation firewall.  You must have an account at [Blacklist Alliance.](https://www.blacklistalliance.com)
 
 ---
-##Scrub file requirements
+## Scrub file requirements
 This application can take in a file with just numbers one per line.  Or you can have a csv formatted file for example
 <pre>
 Name,Phone,Notes
@@ -31,7 +31,7 @@ taken out.  There are some additional options for downloading additional data.
 
 ---
 
-##Downloading and Running
+## Downloading and Running
 
 1. Click releases on the right 
 2. Download the file that matches your computer architecture and operating system
@@ -49,7 +49,7 @@ taken out.  There are some additional options for downloading additional data.
 
 ---
 
-##Apple MacOS Issues 
+## Apple MacOS Issues 
 
 Apple blocks downloaded files from executing steps to fix:
 
